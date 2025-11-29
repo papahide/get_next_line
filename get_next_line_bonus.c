@@ -13,9 +13,9 @@
 #include "get_next_line.h"
 #include <fcntl.h>
 
-static char *ft_strchr(const char *s, int c)
+static char	*ft_strchr(const char *s, int c)
 {
-	unsigned char j;
+	unsigned char	j;
 
 	if (!s)
 		return (NULL);
@@ -32,10 +32,10 @@ static char *ft_strchr(const char *s, int c)
 		return (NULL);
 }
 
-static char *ft_complete_line(char *rest)
+static char	*ft_complete_line(char *rest)
 {
-	char *line;
-	int i;
+	char	*line;
+	int		i;
 
 	i = 0;
 	if (!rest)
@@ -48,11 +48,11 @@ static char *ft_complete_line(char *rest)
 	return (line);
 }
 
-static char *ft_clean_rest(char *rest)
+static char	*ft_clean_rest(char *rest)
 {
-	char *clean;
-	int i;
-	int j;
+	char	*clean;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
@@ -69,10 +69,10 @@ static char *ft_clean_rest(char *rest)
 	return (clean);
 }
 
-static char *ft_readfile_gnl(int fd, char *rest)
+static char	*ft_readfile_gnl(int fd, char *rest)
 {
-	char *buffer = NULL;
-	int bytes;
+	char	*buffer;
+	int		bytes;
 
 	bytes = 1;
 	buffer = malloc(BUFFER_SIZE + 1);
@@ -88,7 +88,7 @@ static char *ft_readfile_gnl(int fd, char *rest)
 			return (NULL);
 		}
 		if (bytes == 0)
-			break;
+			break ;
 		if (bytes >= 0 && bytes < BUFFER_SIZE + 1)
 			buffer[bytes] = '\0';
 		rest = ft_strjoin_gnl(rest, buffer);
@@ -97,10 +97,10 @@ static char *ft_readfile_gnl(int fd, char *rest)
 	return (rest);
 }
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-	static char *rest[1024];
-	char *line;
+	static char	*rest[1024];
+	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);

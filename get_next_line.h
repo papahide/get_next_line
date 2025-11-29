@@ -23,7 +23,7 @@
 
 char	*get_next_line(int fd);
 char	*ft_substr_gnl(char *str, unsigned int start, size_t len);
-size_t		ft_strlen_gnl(const char *str);
+size_t	ft_strlen_gnl(const char *str);
 char	*ft_strjoin_gnl(char *s1, const char *s2);
 char	*ft_strdup_gnl(char *str);
 

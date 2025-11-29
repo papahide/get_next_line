@@ -13,9 +13,9 @@
 #include "get_next_line.h"
 #include <fcntl.h>
 
-static char *ft_strchr(const char *s, int c)
+static char	*ft_strchr(const char *s, int c)
 {
-	unsigned char j;
+	unsigned char	j;
 
 	if (!s)
 		return (NULL);
@@ -32,13 +32,13 @@ static char *ft_strchr(const char *s, int c)
 		return (NULL);
 }
 
-static char *ft_complete_line(char *rest)
+static char	*ft_complete_line(char *rest)
 {
-	char *line;
-	int i;
+	char	*line;
+	int		i;
 
 	i = 0;
-	if (!rest)
+	if ((!rest) || !rest[0] )
 		return (NULL);
 	while (rest[i] && rest[i] != '\n')
 		i++;
@@ -48,14 +48,16 @@ static char *ft_complete_line(char *rest)
 	return (line);
 }
 
-static char *ft_clean_rest(char *rest)
+static char	*ft_clean_rest(char *rest)
 {
-	char *clean;
-	int i;
-	int j;
+	char	*clean;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
+	if (!rest)
+		return (NULL);
 	while (rest[j])
 		j++;
 	while (rest[i] && rest[i] != '\n')
@@ -66,48 +68,66 @@ static char *ft_clean_rest(char *rest)
 		return (free(rest), NULL);
 	clean = ft_substr_gnl(rest, i, j - i);
 	free(rest);
+	rest = NULL;
 	return (clean);
 }
 
-static char *ft_readfile_gnl(int fd, char *rest)
+static char	*ft_readfile_gnl(int fd, char *rest)
 {
-	char *buffer = NULL;
-	int bytes;
+	char	*buffer;
+	int		bytes;
 
 	bytes = 1;
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
-		return (NULL);
+		return (free(rest) , NULL);
 	while ((bytes > 0) && (!ft_strchr(rest, '\n')))
 	{
 		bytes = read(fd, buffer, BUFFER_SIZE);
 		if (bytes < 0)
 		{
 			free(rest);
-			free(buffer);
-			return (NULL);
+			rest = NULL;
+			return (free(buffer), NULL);
 		}
 		if (bytes == 0)
-			break;
+			break ;
 		if (bytes >= 0 && bytes < BUFFER_SIZE + 1)
 			buffer[bytes] = '\0';
+		// printf("REST: %s \n", rest);
 		rest = ft_strjoin_gnl(rest, buffer);
+		// printf("REST: %s \n", rest);
 	}
 	free(buffer);
 	return (rest);
 }
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-	static char *rest;
-	char *line;
+	static char	*rest = NULL;
+	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	rest = ft_readfile_gnl(fd, rest);
-	if (!rest)
-		return (NULL);
+	if (!rest || !rest[0])
+		return (free(rest), NULL);
 	line = ft_complete_line(rest);
 	rest = ft_clean_rest(rest);
 	return (line);
 }
+
+// int	main()
+// {
+// 	int		fd;
+// 	char	*line;
+
+// 	fd = open("only_nl.txt", O_RDONLY);
+// 	while ((line = get_next_line(fd)) != NULL)
+// 	{
+// 		printf("%s", line);
+// 		free(line);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
